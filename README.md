@@ -34,6 +34,7 @@ To use this object pool, include it in your project and instantiate it with the 
 
 ```csharp
 Pool<MyObject> myPool = new Pool<MyObject>();
-myPool.onPull += (obj) => { /* activation code here */ };
-myPool.onToss += (obj) => { /* deactivation code here */ };
+//set code to run on pull or toss
+myPool.onPull = (obj) => { /* activation code here */ };
+myPool.onToss = (obj) => { /* deactivation code here */ };
 
