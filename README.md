@@ -33,8 +33,10 @@ These delegates allow for custom behaviors such as enabling/disabling or activat
 To use this object pool, include it in your project and instantiate it with the specific type you need. Define any custom actions for `onPull` and `onToss` to suit your application's requirements, and set an initial default value if necessary.
 
 ```csharp
-Pool<MyObject> myPool = new Pool<MyObject>();
+Pool<MyObject> myPool = new Pool<MyObject>(default(MyObject));
 //set code to run on pull or toss
-myPool.onPull = (obj) => { /* activation code here */ };
-myPool.onToss = (obj) => { /* deactivation code here */ };
+Pool<MyObject> myPool = new Pool<MyObject>(
+	default(MyObject),
+	(obj) => { /* activation code here */ },
+	(obj) => { /* deactivation code here */ });
 
