@@ -7,8 +7,8 @@ Welcome to the `Pool` repository! This package includes an efficient implementat
 This package contains the following classes:
 
 - `Pool<T>`: A generic base class for object pooling.
-- `MonoPool<T>`: A Unity-specific derivation that handles MonoBehaviour objects.
-- `GamObjectPool`: Another Unity-specific derivation tailored for GameObjects.
+- `MonoPool<T>`: A Unity-specific derivation that handles MonoBehaviour objects. Optionally enables/disabled componet on pull/toss.
+- `GamObjectPool`: Another Unity-specific derivation tailored for GameObjects. Optionally activates/deactivaes GameObject on pull/toss.
 
 ### Key Functionalities
 
