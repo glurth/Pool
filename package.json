@@ -1,0 +1,12 @@
+{
+  "name": "com.glurth.pool",
+  "version": "1.0.0",
+  "displayName": "Pool",
+  "description": "Pool and derived classes",
+  "unity": "2019.1",
+  "dependencies": {},
+  "author": {
+    "name": "Glurth"
+  },
+  "hideInEditor": "false"
+}
