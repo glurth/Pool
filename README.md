@@ -1,9 +1,39 @@
-	This package contains 3 classes; a generic base class `Pool<T>`, and two unity specific derivations MonoPool<T>, and GamObjectPool.
-	This is an implementation of a generic object pool. An object pool is a container that holds a collection of objects that can be reused, rather than creating a new instance each time an object is needed. This can be useful for improving performance and reducing memory usage, as it can be more efficient to reuse objects rather than creating new ones.
-	The 'Pool' class has several methods for adding objects back to the pool ('Toss'), and retrieving objects from the pool ('Pull'). 
-	It also has two delegate properties onPull and onToss, which are called each time an object is retrieved from or added back to the pool. These are used by the `MonoPool<T>`, and `GamObjectPool` classes so they can enable/disable or activate/deactive objects as they are pulled and tossed from/into the pool.
-	The class can be initialized with a default value for objects in the pool, and this default value will be used if the pool is empty when an object is requested.
-    The class implements a list to store the objects in the pool, and it uses the RemoveAt method to retrieve the last item in the list each time an object is requested, ensuring that the most recently added object is used first.
-    Overall, this implementation provides a basic object pool implementation that can be customized by defining custom actions for onPull and onToss and by providing a default value for objects in the pool.
+# Pool Repository
 
+Welcome to the `Pool` repository! This package includes an efficient implementation of a generic object pool designed to help improve performance and reduce memory usage by reusing objects instead of constantly creating new ones. This can significantly boost the efficiency of applications, especially those developed in Unity.
+
+## Features
+
+This package contains the following classes:
+
+- `Pool<T>`: A generic base class for object pooling.
+- `MonoPool<T>`: A Unity-specific derivation that handles MonoBehaviour objects.
+- `GamObjectPool`: Another Unity-specific derivation tailored for GameObjects.
+
+### Key Functionalities
+
+- **Toss**: Adds objects back to the pool.
+- **Pull**: Retrieves objects from the pool.
+
+Additionally, it features two delegate properties:
+
+- **onPull**: Triggered when an object is retrieved from the pool.
+- **onToss**: Triggered when an object is added back to the pool.
+
+These delegates allow for custom behaviors such as enabling/disabling or activating/deactivating objects each time they are pulled from or tossed into the pool, making this tool particularly useful for Unity game development.
+
+### Implementation Details
+
+- The pool uses a list to store the pooled objects.
+- Objects are retrieved from the pool using the `RemoveAt` method, which pulls the last item in the list to ensure that the most recently added object is used first.
+- The class can be initialized with a default value for objects in the pool, which is used if the pool is empty when an object is requested.
+
+## Usage
+
+To use this object pool, include it in your project and instantiate it with the specific type you need. Define any custom actions for `onPull` and `onToss` to suit your application's requirements, and set an initial default value if necessary.
+
+```csharp
+Pool<MyObject> myPool = new Pool<MyObject>();
+myPool.onPull += (obj) => { /* activation code here */ };
+myPool.onToss += (obj) => { /* deactivation code here */ };
 
