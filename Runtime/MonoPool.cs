@@ -11,7 +11,14 @@ namespace EyE.Collections
     /// <typeparam name="T">A type of component added to unity GameObjects</typeparam>
     public class MonoPool<T> : Pool<T> where T : MonoBehaviour
     {
-        public bool enableOnPullDisenableOnToss = true;
+        /// <summary>
+        /// When true objects will be enabled/disabled when pulled/tossed from/into the pool.
+        /// </summary>
+        public bool enableOnPullDisableOnToss = true;
+
+        /// <summary>
+        /// Newly instantiated objects will be made children of this Transform.  If null, new objects will be created in the root of the transform hierarchy.
+        /// </summary>
         public Transform instantiationParent;
 
         /// <summary>
@@ -25,14 +32,23 @@ namespace EyE.Collections
             value = Component.Instantiate<T>(defaultPoolValue, instantiationParent);
         }
 
+        /// <summary>
+        /// Invoked when object is pulled out of the pool.
+        /// </summary>
+        /// <param name="pulledObject">the object that was pulled</param>
         void OnMonoPull(T pulledObject)
         {
-            if (enableOnPullDisenableOnToss)
+            if (enableOnPullDisableOnToss)
                 pulledObject.enabled=true;
         }
+
+        /// <summary>
+        /// Invoked when object is tossed into the pool.
+        /// </summary>
+        /// <param name="pulledObject">the object that was tossed in</param>
         void OnMonoToss(T objectPutBackInPool)
         {
-            if (enableOnPullDisenableOnToss)
+            if (enableOnPullDisableOnToss)
                 objectPutBackInPool.enabled = false;
         }
 
@@ -42,7 +58,7 @@ namespace EyE.Collections
         /// </summary>
         public MonoPool() : base()
         {
-            Debug.LogWarning("You are using the paramaterless constructor on a MonoPool. The defaultPoolValue will remain null.\nUse the MonoPool(T defaultPoolValue, Transform instantiationParent) version instead.\nIf you manually set these value later, this warning can be ignored");
+            Debug.LogWarning("You are using the parameterless constructor on a MonoPool. The defaultPoolValue will remain null.\nUse the MonoPool(T defaultPoolValue, Transform instantiationParent) version instead.\nIf you manually set these value later, this warning can be ignored");
             this.onPull = (a) => { OnMonoPull(a); };
             this.onToss = (a) => { OnMonoToss(a); };
         }
@@ -58,7 +74,6 @@ namespace EyE.Collections
             this.onPull = (a) => { OnMonoPull(a); };
             this.onToss = (a) => { OnMonoToss(a); };
         }
-
 
         /// <summary>
         /// Used to create a new MonoPool object.  It takes parameters that specify how new elements, that don't exist yet, should be created.

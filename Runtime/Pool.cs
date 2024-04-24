@@ -8,7 +8,6 @@ namespace EyE.Collections
     ///The class has several methods for adding objects back to the pool (Toss), and retrieving objects from the pool (Pull). It also has two delegate properties onPull and onToss, which are called each time an object is retrieved from or added back to the pool. The class can be initialized with a default value for objects in the pool, and this default value will be used if the pool is empty when an object is requested.
     ///The class implements a list to store the objects in the pool, and it uses the RemoveAt method to retrieve the last item in the list each time an object is requested, ensuring that the most recently added object is used first.
     ///Overall, this implementation provides a basic object pool implementation that can be customized by defining custom actions for onPull and onToss and by providing a default value for objects in the pool.
-    /// 
     /// </summary>
     /// <typeparam name="T">The type of object stored in the pool.</typeparam>
     public class Pool<T>
@@ -17,6 +16,7 @@ namespace EyE.Collections
         /// The default value of new items pulled from the pool.
         /// </summary>
         protected T defaultPoolValue;
+
         /// <summary>
         /// The action to be performed when an item is pulled from the pool.
         /// </summary>
@@ -28,24 +28,22 @@ namespace EyE.Collections
         protected Action<T> onToss = (T) => { };
 
         /// <summary>
-        /// The list of contents in the pool.
+        /// The list of contents in the pool.  These are unused items, doing nothing but waiting to be pulled.
         /// </summary>
-        public List<T> poolConents = new List<T>();
+        protected List<T> poolContents = new List<T>();
 
         /// <summary>
         /// The pool will keep a record of all items that have been pulled from it.  Invoking TossAll() will toss them all back into the pool.
         /// Keeping this option true will increase the time required to perform pull and toss operations.
-        /// Setting this option to true after pool operation starts is not recommended.
+        /// Setting this option to true, after pool operation starts is not recommended.
         /// </summary>
         bool recordPulled = true;
 
-        List<T> pulledList = new List<T>();
-        /*
         /// <summary>
-        /// Constructor that sets the default pool value to the default value of T.
+        /// internally stores items previously pulled from the pool.  Used by TossAllBack, but requires updating every pull/toss.
         /// </summary>
-        public Pool() { defaultPoolValue = default(T); }
-        */
+        List<T> pulledList = new List<T>();
+
         /// <summary>
         /// Constructor the specifies if pull objects should be recorded
         /// </summary>
@@ -57,8 +55,6 @@ namespace EyE.Collections
         /// </summary>
         /// <param name="defaultPoolValue">The new default pool value</param>
         public void SetDefault(T defaultPoolValue) { this.defaultPoolValue = defaultPoolValue; }
-
-
 
         /// <summary>
         /// Constructor that sets the default pool value.
@@ -88,7 +84,7 @@ namespace EyE.Collections
         /// <param name="valueToPutBackInPool">The item to be tossed back into the pool</param>
         public void Toss(T valueToPutBackInPool)
         {
-            poolConents.Add(valueToPutBackInPool);
+            poolContents.Add(valueToPutBackInPool);
             if (recordPulled)
                 pulledList.Remove(valueToPutBackInPool);
             onToss(valueToPutBackInPool);
@@ -114,10 +110,10 @@ namespace EyE.Collections
         public T Pull()
         {
             T returnValue;
-            if (poolConents.Count != 0)
+            if (poolContents.Count != 0)
             {
-                returnValue = poolConents[poolConents.Count - 1];
-                poolConents.RemoveAt(poolConents.Count - 1);
+                returnValue = poolContents[poolContents.Count - 1];
+                poolContents.RemoveAt(poolContents.Count - 1);
             }
             else
             {
@@ -133,7 +129,10 @@ namespace EyE.Collections
         /// This function can be overridden in descendants to specify how new objects that don't yet exist in the pool should be initialized.
         /// </summary>
         /// <param name="value">this object will be filled with, or set to a reference to, new objects when they are pulled from the pool</param>
-        protected virtual void AssignDefaultValueTo(out T value) { value = defaultPoolValue; }
+        protected virtual void AssignDefaultValueTo(out T value)
+        {
+            value = defaultPoolValue;
+        }
 
         /// <summary>
         /// Function used to pull a number of items from the pool

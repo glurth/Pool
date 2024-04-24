@@ -1,6 +1,6 @@
 # Pool Repository
 
-Welcome to the `Pool` repository! This package includes an efficient implementation of a generic object pool designed to help improve performance and reduce memory usage by reusing objects instead of constantly creating new ones. This can significantly boost the efficiency of applications, especially those developed in Unity.
+This package includes an implementation of a generic object pool designed to help improve performance and reduce memory usage by reusing objects instead of constantly creating new ones. This can significantly boost the efficiency of application memory usage.  Inculdes class made specifically for use with Unity types and classes.
 
 ## Features
 
