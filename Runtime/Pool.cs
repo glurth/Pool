@@ -37,12 +37,12 @@ namespace EyE.Collections
         /// Keeping this option true will increase the time required to perform pull and toss operations.
         /// Setting this option to true, after pool operation starts is not recommended.
         /// </summary>
-        bool recordPulled = true;
+        protected bool recordPulled = true;
 
         /// <summary>
         /// internally stores items previously pulled from the pool.  Used by TossAllBack, but requires updating every pull/toss.
         /// </summary>
-        List<T> pulledList = new List<T>();
+        protected List<T> pulledList = new List<T>();
 
         /// <summary>
         /// Constructor the specifies if pull objects should be recorded
@@ -51,7 +51,7 @@ namespace EyE.Collections
         public Pool(bool recordPulled = true) { defaultPoolValue = default(T); this.recordPulled = recordPulled; }
 
         /// <summary>
-        /// Sets the default pool value.
+        /// Sets the default pool value.  Changing the after usage of the pool has started is possible, but pull results may be unpredictable.
         /// </summary>
         /// <param name="defaultPoolValue">The new default pool value</param>
         public void SetDefault(T defaultPoolValue) { this.defaultPoolValue = defaultPoolValue; }
@@ -160,5 +160,7 @@ namespace EyE.Collections
             pulledList.Clear();
         }
     }
+
+    
 }
 

@@ -15,12 +15,12 @@ This package contains the following classes:
 - **Toss**: Adds objects back to the pool.
 - **Pull**: Retrieves objects from the pool.
 
-Additionally, it features two delegate properties:
+Additionally, it features two delegates that can, optionally, be assigned by via a the constrctor that takes them as parameters:
 
 - **onPull**: Triggered when an object is retrieved from the pool.
 - **onToss**: Triggered when an object is added back to the pool.
 
-These delegates allow for custom behaviors such as enabling/disabling or activating/deactivating objects each time they are pulled from or tossed into the pool, making this tool particularly useful for Unity game development.
+These delegates allow for custom behaviors such as enabling/disabling or activating/deactivating objects each time they are pulled from or tossed into the pool, this can be particularly useful in Unity game development.  They may also be accessed as protected members when creating custom decendants of the Pool<T> class.
 
 ### Implementation Details
 
@@ -47,7 +47,10 @@ Pool<MyObject> myPool = new Pool<MyObject>(
 ```
 Another Example, Using a custom Unity Monobehavior 
 ```csharp
-
+using EyE.Collections;
+.
+.
+.
 MonoPool<BulletClass> myBulletPool = new MonoPool<BulletClass>(
 	bulletPreFabRef, bulletSpaceTransform,
 	(bullet) => { bullet.gameObject.SetActive(true); bullet.OnFired();}, //on pull

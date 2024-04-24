@@ -90,4 +90,41 @@ namespace EyE.Collections
             this.onToss = (a) => { OnMonoToss(a); onToss(a); };
         }
     }
+
+    public class DisposableMonoPool<T> : MonoPool<T>, IDisposable where T : MonoBehaviour
+    {
+        private bool disposedValue;
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    // TODO: dispose managed state (managed objects)
+                    foreach (T unusedObj in poolContents)
+                        foreach (IDisposable d in unusedObj.GetComponentsInChildren<IDisposable>())
+                            d.Dispose();
+                    if (recordPulled)
+                    {
+                        foreach (T usedObj in pulledList)
+                            foreach (IDisposable d in usedObj.GetComponentsInChildren<IDisposable>())
+                                d.Dispose();
+                    }
+                }
+
+                // TODO: free unmanaged resources (unmanaged objects) and override finalizer
+                // TODO: set large fields to null
+                disposedValue = true;
+            }
+        }
+
+
+        public void Dispose()
+        {
+            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
+        }
+    }
 }
