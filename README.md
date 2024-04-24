@@ -1,6 +1,6 @@
 # Pool Repository
 
-This package includes an implementation of a generic object pool designed to help improve performance and reduce memory usage by reusing objects instead of constantly creating new ones. This can significantly boost the efficiency of application memory usage.  Inculdes class made specifically for use with Unity types and classes.
+This package includes a C# implementation of a generic object pool, a data structure and object factory designed to help improve performance and reduce memory usage by reusing objects instead of constantly creating new ones. This can significantly boost the efficiency of application memory usage. Inculdes class made specifically for use with Unity types and classes.
 
 ## Features
 
@@ -33,10 +33,38 @@ These delegates allow for custom behaviors such as enabling/disabling or activat
 To use this object pool, include it in your project and instantiate it with the specific type you need. Define any custom actions for `onPull` and `onToss` to suit your application's requirements, and set an initial default value if necessary.
 
 ```csharp
-Pool<MyObject> myPool = new Pool<MyObject>(default(MyObject));
-//set code to run on pull or toss
+using EyE.Collections;
+.
+.
+.
+Pool<MyObject> myPool = new Pool<BulletClass>(default(MyObject));
+//OR set code to run on pull or toss
 Pool<MyObject> myPool = new Pool<MyObject>(
-	default(MyObject),
+	myObjectDefaultValueMember,
 	(obj) => { /* activation code here */ },
 	(obj) => { /* deactivation code here */ });
+...
+```
+Another Example, Using a custom Unity Monobehavior 
+```csharp
 
+MonoPool<BulletClass> myBulletPool = new MonoPool<BulletClass>(
+	bulletPreFabRef, bulletSpaceTransform,
+	(bullet) => { bullet.gameObject.SetActive(true); bullet.OnFired();}, //on pull
+	(bullet) => { bullet.OnHit(); bullet.gameObject.SetActive(false);});); //on toss
+
+BulletClass ShootBullet(Transform gunMuzzel)
+{
+	BulletClass b = myBulletPool.Pull();
+	b.transform.position = gunMuzzel.position;
+	b.transform.rotation = gunMuzzel.rotation;
+	b.velocity = gunVelocityMember;
+	..stuff..
+	return b;
+}
+
+void OnBulletHit(BulletClass b)
+{
+	...stuff...
+	myBulletPool.Toss(b);
+}
