@@ -3,6 +3,7 @@ using System;
 
 namespace EyE.Collections
 {
+
     /// <summary>
     ///This is an implementation of a generic object pool. An object pool is a container that holds a collection of objects that can be reused, rather than creating a new instance each time an object is needed. This can be useful for improving performance and reducing memory usage, as it can be more efficient to reuse objects rather than creating new ones.
     ///The class has several methods for adding objects back to the pool (Toss), and retrieving objects from the pool (Pull). It also has two delegate properties onPull and onToss, which are called each time an object is retrieved from or added back to the pool. The class can be initialized with a default value for objects in the pool, and this default value will be used if the pool is empty when an object is requested.
@@ -10,7 +11,7 @@ namespace EyE.Collections
     ///Overall, this implementation provides a basic object pool implementation that can be customized by defining custom actions for onPull and onToss and by providing a default value for objects in the pool.
     /// </summary>
     /// <typeparam name="T">The type of object stored in the pool.</typeparam>
-    public class Pool<T>
+    public class Pool<T> where T:class
     {
         /// <summary>
         /// The default value of new items pulled from the pool.
@@ -30,11 +31,11 @@ namespace EyE.Collections
         /// <summary>
         /// The list of contents in the pool.  These are unused items, doing nothing but waiting to be pulled.
         /// </summary>
-        protected List<T> poolContents = new List<T>();
+        protected HashSet<T> poolContents = new HashSet<T>();
 
         /// <summary>
         /// The pool will keep a record of all items that have been pulled from it.  Invoking TossAll() will toss them all back into the pool.
-        /// Keeping this option true will increase the time required to perform pull and toss operations.
+        /// Note: Keeping this option true will increase the time required to perform pull and toss operations.
         /// Setting this option to true, after pool operation starts is not recommended.
         /// </summary>
         protected bool recordPulled = true;
@@ -42,7 +43,7 @@ namespace EyE.Collections
         /// <summary>
         /// internally stores items previously pulled from the pool.  Used by TossAllBack, but requires updating every pull/toss.
         /// </summary>
-        protected List<T> pulledList = new List<T>();
+        protected HashSet<T> pulledList = new HashSet<T>();
 
         /// <summary>
         /// Constructor the specifies if pull objects should be recorded
@@ -84,7 +85,9 @@ namespace EyE.Collections
         /// <param name="valueToPutBackInPool">The item to be tossed back into the pool</param>
         public void Toss(T valueToPutBackInPool)
         {
-            poolContents.Add(valueToPutBackInPool);
+            if (valueToPutBackInPool == null)
+                throw new ArgumentNullException("Attempting to toss a null value into the pool[" + GetType() + "]");
+            poolContents.Add(valueToPutBackInPool); //works weather item is on the list already or not- no need to check ourselves
             if (recordPulled)
                 pulledList.Remove(valueToPutBackInPool);
             onToss(valueToPutBackInPool);
@@ -102,6 +105,14 @@ namespace EyE.Collections
             }
         }
 
+        bool TryGetAny(HashSet<T> set, out T val)
+        {
+            val = null;
+            var enumerator = set.GetEnumerator();
+            if (!enumerator.MoveNext()) return false;
+            val = enumerator.Current; // Get the current item
+            return true;
+        }
 
         /// <summary>
         /// Pulls an item from the pool.
@@ -110,14 +121,20 @@ namespace EyE.Collections
         public T Pull()
         {
             T returnValue;
-            if (poolContents.Count != 0)
+            /*if (poolContents.Count != 0)
             {
                 returnValue = poolContents[poolContents.Count - 1];
                 poolContents.RemoveAt(poolContents.Count - 1);
+            }*/
+            if (TryGetAny(poolContents,out returnValue))
+            {
+                poolContents.Remove(returnValue);
             }
             else
             {
                 AssignDefaultValueTo(out returnValue);
+                if (returnValue == null)
+                    throw new NullReferenceException("Default value of Pool ["+GetType()+ "] is null.  One must either assign a non-null value to the Pool's defaultPoolValue member, or override the AssignDefaultValueTo function.");
             }
             onPull(returnValue);
             if (recordPulled)

@@ -10,6 +10,19 @@ This package contains the following classes:
 - `MonoPool<T>`: A Unity-specific derivation that handles MonoBehaviour objects. Optionally enables/disabled componet on pull/toss.
 - `GamObjectPool`: Another Unity-specific derivation tailored for GameObjects. Optionally activates/deactivaes GameObject on pull/toss.
 
+### Dependencies
+
+- .NET Framework
+- Unity
+
+### Installation
+
+Install this package in your Unity project using the Package Manager:
+
+1. Open the Package Manager window (**Packages** > **Manage Packages**).
+2. Click on the **+** button in the top left corner and select **Add package from git URL**.
+3. Paste the following URL into the address field and click **Install**: https://github.com/glurth/SerializableType.git
+
 ### Key Functionalities
 
 - **Toss**: Adds objects back to the pool.
