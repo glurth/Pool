@@ -170,11 +170,12 @@ namespace EyE.Collections
         public void TossAllBack()
         {
             if (!recordPulled) throw new System.ArgumentException("TossAllBack has been invoked on a Pool, but this Pool has the recordPull member set to false.");
-            foreach (T element in pulledList)
+            List<T> elementsToToss = new List<T>(pulledList);
+            foreach (T element in elementsToToss)
             {
                 Toss(element);
             }
-            pulledList.Clear();
+            
         }
     }
 
